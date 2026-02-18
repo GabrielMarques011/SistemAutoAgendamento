@@ -4,12 +4,12 @@ import { FileText, AlertCircle, Edit3, CheckSquare, Square, ArrowLeft } from "lu
 export default function ScreenLentidao2({ formData, setFormData, nextStep, prevStep }) {
   // DEBUG: Verificar se as props estão chegando
   useEffect(() => {
-    console.log("🔍 ScreenLentidao2 - Props recebidas:", {
+    /* console.log("🔍 ScreenLentidao2 - Props recebidas:", {
       hasPrevStep: typeof prevStep === 'function',
       hasNextStep: typeof nextStep === 'function',
       hasFormData: !!formData,
       hasSetFormData: typeof setFormData === 'function'
-    });
+    }); */
   }, []);
 
   const [checklistItems, setChecklistItems] = useState([
@@ -160,12 +160,12 @@ export default function ScreenLentidao2({ formData, setFormData, nextStep, prevS
 
   // FUNÇÃO CORRIGIDA PARA VOLTAR
   const handleVoltar = () => {
-    console.log("🔄 ScreenMudanca2 - Tentando voltar...");
+    /* console.log("🔄 ScreenMudanca2 - Tentando voltar..."); */
     if (typeof prevStep === 'function') {
-      console.log("✅ ScreenMudanca2 - prevStep é uma função, executando...");
+      /* console.log("✅ ScreenMudanca2 - prevStep é uma função, executando..."); */
       prevStep();
     } else {
-      console.error("❌ ScreenMudanca2 - prevStep não é uma função:", prevStep);
+      /* console.error("❌ ScreenMudanca2 - prevStep não é uma função:", prevStep); */
       alert("Função de voltar não disponível. Contate o suporte.");
       // Fallback alternativo
       if (window.history && window.history.length > 1) {
@@ -182,7 +182,7 @@ export default function ScreenLentidao2({ formData, setFormData, nextStep, prevS
     if (typeof nextStep === 'function') {
       nextStep();
     } else {
-      console.error("ScreenMudanca2 - nextStep não é uma função");
+      /* console.error("ScreenMudanca2 - nextStep não é uma função"); */
     }
   };
 

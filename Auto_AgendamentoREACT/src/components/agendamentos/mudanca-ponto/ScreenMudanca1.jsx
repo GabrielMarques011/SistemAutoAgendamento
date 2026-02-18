@@ -82,7 +82,7 @@ export default function ScreenMudanca1({ formData, setFormData, nextStep }) {
       setClientFound(true);
       await buscarContratos(foundId);
     } catch (err) {
-      console.error('Erro buscar cliente:', err);
+      /* console.error('Erro buscar cliente:', err); */
       if (!errorMsg) setErrorMsg(err.message || String(err));
       setClientFound(false);
       setContracts([]);
@@ -203,7 +203,7 @@ export default function ScreenMudanca1({ formData, setFormData, nextStep }) {
         setFormData(prev => ({ ...prev, contractId: '' }));
       }
     } catch (err) {
-      console.error('Erro buscar contratos:', err);
+      /* console.error('Erro buscar contratos:', err); */
       if (!errorMsg) setErrorMsg(err.message || String(err));
       setContracts([]);
       setContractWarning(null);

@@ -115,7 +115,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
         melhor_horario_reserva: formData.melhor_horario_reserva || periodToReserveLetter[formData.period] || "Q",
       };
 
-      console.log("Enviando /api/transfer payload:", transferPayload);
+      /* console.log("Enviando /api/transfer payload:", transferPayload); */
 
       const resTransfer = await fetch("http://10.0.30.251:5000/api/transfer", {
         method: "POST",
@@ -130,7 +130,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
         throw new Error(`Falha na transferência: ${errMsg}`);
       }
 
-      console.log("Transferência criada:", jsonTransfer);
+      /* console.log("Transferência criada:", jsonTransfer); */
 
       const cepSanitized = (formData.cep || "").replace(/\D/g, "");
       const validCep = cepSanitized && cepSanitized.length === 8 && !/^0+$/.test(cepSanitized);
@@ -168,7 +168,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
         updatePayload.cep = cepSanitized;
       }
 
-      console.log("Enviando /api/update_contrato payload:", updatePayload);
+      /* console.log("Enviando /api/update_contrato payload:", updatePayload); */
 
       const resUpdate = await fetch("http://10.0.30.251:5000/api/update_contrato", {
         method: "POST",
@@ -182,7 +182,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
         throw new Error(jsonUpdate.error || JSON.stringify(jsonUpdate));
       }
 
-      console.log("Contrato atualizado:", jsonUpdate);
+      /* console.log("Contrato atualizado:", jsonUpdate); */
 
       setSuccessData({
         protocolo: jsonTransfer.protocolo_os || jsonTransfer.id_ticket,
@@ -192,7 +192,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
       });
 
     } catch (err) {
-      console.error("Erro ao finalizar agendamento:", err);
+      /* console.error("Erro ao finalizar agendamento:", err); */
       alert("Erro ao finalizar: " + (err.message || String(err)));
     } finally {
       setLoading(false);
@@ -225,7 +225,7 @@ export default function Screen6({ formData, prevStep, onReset }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
     } catch (err) {
-      console.error('Falha ao copiar texto: ', err);
+      /* console.error('Falha ao copiar texto: ', err); */
       alert('Falha ao copiar texto. Por favor, copie manualmente.');
     }
   };

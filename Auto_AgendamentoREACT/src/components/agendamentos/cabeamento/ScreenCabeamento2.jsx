@@ -3,12 +3,12 @@ import { FileText, AlertCircle, Edit3, ArrowLeft, Home, Building, Wrench, Constr
 
 export default function ScreenCabeamento2({ formData, setFormData, nextStep, prevStep }) {
   useEffect(() => {
-    console.log("🔍 ScreenCabeamento2 - Props recebidas:", {
+    /* console.log("🔍 ScreenCabeamento2 - Props recebidas:", {
       hasPrevStep: typeof prevStep === 'function',
       hasNextStep: typeof nextStep === 'function',
       hasFormData: !!formData,
       hasSetFormData: typeof setFormData === 'function'
-    });
+    }); */
   }, []);
 
   // Estados para os novos campos de cabeamento
@@ -76,12 +76,12 @@ export default function ScreenCabeamento2({ formData, setFormData, nextStep, pre
   };
 
   const handleVoltar = () => {
-    console.log("🔄 ScreenCabeamento2 - Tentando voltar...");
+    /* console.log("🔄 ScreenCabeamento2 - Tentando voltar..."); */
     if (typeof prevStep === 'function') {
-      console.log("✅ ScreenCabeamento2 - prevStep é uma função, executando...");
+      /* console.log("✅ ScreenCabeamento2 - prevStep é uma função, executando..."); */
       prevStep();
     } else {
-      console.error("❌ ScreenCabeamento2 - prevStep não é uma função:", prevStep);
+      /* console.error("❌ ScreenCabeamento2 - prevStep não é uma função:", prevStep); */
       alert("Função de voltar não disponível. Contate o suporte.");
       if (window.history && window.history.length > 1) {
         window.history.back();
@@ -97,7 +97,7 @@ export default function ScreenCabeamento2({ formData, setFormData, nextStep, pre
     if (typeof nextStep === 'function') {
       nextStep();
     } else {
-      console.error("ScreenCabeamento2 - nextStep não é uma função");
+      // console.error("ScreenCabeamento2 - nextStep não é uma função");
     }
   };
 

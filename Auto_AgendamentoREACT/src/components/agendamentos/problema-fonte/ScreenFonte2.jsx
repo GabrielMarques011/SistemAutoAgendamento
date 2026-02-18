@@ -3,12 +3,12 @@ import { FileText, AlertCircle, Edit3, ArrowLeft, Cpu, Power, Zap } from "lucide
 
 export default function ScreenFonte2({ formData, setFormData, nextStep, prevStep }) {
   useEffect(() => {
-    console.log("🔍 ScreenFonte2 - Props recebidas:", {
+    /* console.log("🔍 ScreenFonte2 - Props recebidas:", {
       hasPrevStep: typeof prevStep === 'function',
       hasNextStep: typeof nextStep === 'function',
       hasFormData: !!formData,
       hasSetFormData: typeof setFormData === 'function'
-    });
+    }); */
   }, []);
 
   // Estados para os novos campos
@@ -83,12 +83,12 @@ export default function ScreenFonte2({ formData, setFormData, nextStep, prevStep
   };
 
   const handleVoltar = () => {
-    console.log("🔄 ScreenFonte2 - Tentando voltar...");
+    /* console.log("🔄 ScreenFonte2 - Tentando voltar..."); */
     if (typeof prevStep === 'function') {
-      console.log("✅ ScreenFonte2 - prevStep é uma função, executando...");
+      /* console.log("✅ ScreenFonte2 - prevStep é uma função, executando..."); */
       prevStep();
     } else {
-      console.error("❌ ScreenFonte2 - prevStep não é uma função:", prevStep);
+      /* console.error("❌ ScreenFonte2 - prevStep não é uma função:", prevStep); */
       alert("Função de voltar não disponível. Contate o suporte.");
       if (window.history && window.history.length > 1) {
         window.history.back();
@@ -104,7 +104,7 @@ export default function ScreenFonte2({ formData, setFormData, nextStep, prevStep
     if (typeof nextStep === 'function') {
       nextStep();
     } else {
-      console.error("ScreenFonte2 - nextStep não é uma função");
+      /* console.error("ScreenFonte2 - nextStep não é uma função"); */
     }
   };
 

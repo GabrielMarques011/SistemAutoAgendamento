@@ -86,7 +86,7 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
         melhor_horario_reserva: periodToReserveLetter[formData.period] || "Q",
       };
 
-      console.log("Enviando /api/update_contrato payload:", updatePayload);
+      /* console.log("Enviando /api/update_contrato payload:", updatePayload); */
 
       const resUpdate = await fetch("http://10.0.30.251:5000/api/update_contrato", {
         method: "POST",
@@ -97,10 +97,10 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
       const jsonUpdate = await resUpdate.json().catch(() => ({ error: "Resposta inválida do servidor no update_contrato" }));
 
       if (!resUpdate.ok) {
-        console.warn("Aviso: Falha ao atualizar contrato, mas continuando com abertura de quedas:", jsonUpdate);
+        /* console.warn("Aviso: Falha ao atualizar contrato, mas continuando com abertura de quedas:", jsonUpdate); */
         // Não vamos lançar erro aqui para não bloquear o fluxo principal
       } else {
-        console.log("Contrato atualizado com sucesso:", jsonUpdate);
+        /* console.log("Contrato atualizado com sucesso:", jsonUpdate); */
       }
 
       // 2. Segundo, criar a abertura de quedas de conexão
@@ -128,7 +128,7 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
         melhor_horario_reserva: periodToReserveLetter[formData.period] || "Q",
       };
 
-      console.log("Enviando /api/quedas payload:", quedasPayload);
+      /* console.log("Enviando /api/quedas payload:", quedasPayload); */
 
       const resQuedas = await fetch("http://10.0.30.251:5000/api/cabeamento", {
         method: "POST",
@@ -143,7 +143,7 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
         throw new Error(`Falha na abertura de quedas: ${errMsg}`);
       }
 
-      console.log("Quedas de conexão criada:", jsonQuedas);
+      /* console.log("Quedas de conexão criada:", jsonQuedas); */
 
       setSuccessData({
         protocolo: jsonQuedas.protocolo_os || jsonQuedas.id_ticket,
@@ -154,7 +154,7 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
       });
 
     } catch (err) {
-      console.error("Erro ao finalizar abertura de quedas:", err);
+      /* console.error("Erro ao finalizar abertura de quedas:", err); */
       alert("Erro ao finalizar: " + (err.message || String(err)));
     } finally {
       setLoading(false);
@@ -188,7 +188,7 @@ export default function ScreenCabeamento5({ formData, prevStep, onReset }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
     } catch (err) {
-      console.error('Falha ao copiar texto: ', err);
+      // console.error('Falha ao copiar texto: ', err);
       alert('Falha ao copiar texto. Por favor, copie manualmente.');
     }
   };

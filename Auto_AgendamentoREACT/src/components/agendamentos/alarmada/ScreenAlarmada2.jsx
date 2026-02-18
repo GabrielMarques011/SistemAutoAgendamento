@@ -4,12 +4,12 @@ import { FileText, AlertCircle, Edit3, ArrowLeft, DollarSign, RefreshCw, CreditC
 export default function ScreenRoteador2({ formData, setFormData, nextStep, prevStep }) {
   // DEBUG: Verificar se as props estão chegando
   useEffect(() => {
-    console.log("🔍 ScreenRoteador2 - Props recebidas:", {
+    /* console.log("🔍 ScreenRoteador2 - Props recebidas:", {
       hasPrevStep: typeof prevStep === 'function',
       hasNextStep: typeof nextStep === 'function',
       hasFormData: !!formData,
       hasSetFormData: typeof setFormData === 'function'
-    });
+    }); */
   }, []);
 
   const [tipoProblema, setTipoProblema] = useState(formData.tipoProblema || "");
@@ -191,12 +191,12 @@ export default function ScreenRoteador2({ formData, setFormData, nextStep, prevS
 
   // FUNÇÃO CORRIGIDA PARA VOLTAR
   const handleVoltar = () => {
-    console.log("🔄 ScreenRoteador2 - Tentando voltar...");
+    /* console.log("🔄 ScreenRoteador2 - Tentando voltar..."); */
     if (typeof prevStep === 'function') {
-      console.log("✅ ScreenRoteador2 - prevStep é uma função, executando...");
+      /* console.log("✅ ScreenRoteador2 - prevStep é uma função, executando..."); */
       prevStep();
     } else {
-      console.error("❌ ScreenRoteador2 - prevStep não é uma função:", prevStep);
+      /* console.error("❌ ScreenRoteador2 - prevStep não é uma função:", prevStep); */
       alert("Função de voltar não disponível. Contate o suporte.");
       if (window.history && window.history.length > 1) {
         window.history.back();
@@ -212,7 +212,7 @@ export default function ScreenRoteador2({ formData, setFormData, nextStep, prevS
     if (typeof nextStep === 'function') {
       nextStep();
     } else {
-      console.error("ScreenRoteador2 - nextStep não é uma função");
+      /* console.error("ScreenRoteador2 - nextStep não é uma função"); */
     }
   };
 

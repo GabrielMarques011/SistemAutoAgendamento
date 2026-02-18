@@ -53,7 +53,7 @@ export default function Screen3({ formData, setFormData, nextStep, prevStep }) {
 
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          console.warn("Erro ao obter contrato:", data);
+          /* console.warn("Erro ao obter contrato:", data); */
           setFetchError(data.error || "Erro ao buscar contrato");
           setLoading(false);
           return;
@@ -70,7 +70,7 @@ export default function Screen3({ formData, setFormData, nextStep, prevStep }) {
 
         // DEBUG TEMP: inspecione no console as chaves/valores retornados
         // Remova esse console.log quando confirmar os nomes dos campos.
-        console.log("DEBUG /cliente_contrato -> registro raw:", registro);
+        /* console.log("DEBUG /cliente_contrato -> registro raw:", registro); */
 
         const tryPick = (obj, keys) => {
           for (const k of keys) {
@@ -135,7 +135,7 @@ export default function Screen3({ formData, setFormData, nextStep, prevStep }) {
         }));
 
       } catch (err) {
-        console.error("Erro fetch contrato:", err);
+        /* console.error("Erro fetch contrato:", err); */
         setFetchError(String(err) || "Erro desconhecido");
       } finally {
         setLoading(false);
@@ -167,7 +167,7 @@ export default function Screen3({ formData, setFormData, nextStep, prevStep }) {
         oldCity: dados.city || prev.oldCity || ""
       }));
     } catch (err) {
-      console.error(err);
+      /* console.error(err); */
       alert("Erro ao buscar CEP.");
     }
   };

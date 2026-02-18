@@ -51,7 +51,7 @@ export default function Screen2({ formData, setFormData, nextStep, prevStep }) {
     try {
       const res = await fetch("http://10.0.30.251:5000/api/condominios");
       if (!res.ok) {
-        console.warn("Falha ao buscar condomínios", res.status);
+        /* console.warn("Falha ao buscar condomínios", res.status); */
         setCondominios([]);
         return;
       }
@@ -61,7 +61,7 @@ export default function Screen2({ formData, setFormData, nextStep, prevStep }) {
       );
       setCondominios(sorted);
     } catch (err) {
-      console.error("Erro ao buscar condomínios:", err);
+      /* console.error("Erro ao buscar condomínios:", err); */
       setCondominios([]);
     } finally {
       setLoadingCondominios(false);
@@ -107,7 +107,7 @@ export default function Screen2({ formData, setFormData, nextStep, prevStep }) {
       });
       setErrors((prev) => ({ ...prev, cep: null }));
     } catch (err) {
-      console.error(err);
+      /* console.error(err); */
       alert("Erro ao buscar CEP.");
     } finally {
       setLoadingCep(false);

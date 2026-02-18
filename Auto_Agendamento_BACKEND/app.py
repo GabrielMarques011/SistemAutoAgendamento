@@ -70,7 +70,7 @@ def get_city_id_ixc(city_name):
     payload = {"qtype": "nome", "query": city_name, "oper": "=", "page": "1", "rp": "1"}
     registro, err = consultar_ixc_registro("cidade", payload, listar=True)
     if err:
-        print(f"Erro ao buscar cidade: {err}")
+        # print(f"Erro ao buscar cidade: {err}")
         return None
     return registro.get("id") or registro.get("ID") or None
 
@@ -119,7 +119,7 @@ def geocode_address(address, city=None, state=None):
         lon = results[0].get("lon")
         return lat, lon
     except Exception as e:
-        print("Geocode error:", e)
+        # print("Geocode error:", e)
         return None, None
 
 def parse_bool(value):
@@ -160,7 +160,7 @@ def buscar_cep(cep):
             }), 200
         
         # Se AwesomeAPI falhar, tenta ViaCEP
-        print("AwesomeAPI falhou, tentando ViaCEP...")
+        # print("AwesomeAPI falhou, tentando ViaCEP...")
         res_viacep = requests.get(f"https://viacep.com.br/ws/{cep}/json/", timeout=450)
         
         if res_viacep.status_code == 200 and not res_viacep.json().get("erro"):
@@ -186,7 +186,7 @@ def buscar_cep(cep):
     except requests.exceptions.Timeout:
         return jsonify({"error": "Timeout ao buscar CEP"}), 408
     except Exception as e:
-        print("Erro ao buscar CEP:", str(e))
+        # print("Erro ao buscar CEP:", str(e))
         return jsonify({"error": "Erro interno do servidor"}), 500
 
 # --------------------------
@@ -234,7 +234,7 @@ def listar_condominios():
             })
         return jsonify({"total": data.get("total", 0), "registros": simplified}), 200
     except Exception as e:
-        print("EXCEPTION /api/condominios:", str(e))
+        # print("EXCEPTION /api/condominios:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -582,11 +582,12 @@ def rota_transfer():
                 lat_g, lng_g = geocode_address(endereco, cidade or None, data.get("state") or None)
                 if lat_g and lng_g:
                     lat, lng = lat or lat_g, lng or lng_g
-                    print(f"Geocode fallback found lat/lng: {lat}/{lng}")
+                    # print(f"Geocode fallback found lat/lng: {lat}/{lng}")
             except Exception as e:
-                print("Geocode fallback failed:", e)
+                # print("Geocode fallback failed:", e)
+                pass
 
-        print("DEBUG: transfer incoming lat/lng:", lat, lng, "city_ibge:", city_ibge)
+        # print("DEBUG: transfer incoming lat/lng:", lat, lng, "city_ibge:", city_ibge)
 
         # 1) obter id_login
         id_login, err_login = get_login_id(id_contrato)
@@ -689,7 +690,7 @@ Novo endereço: {endereco}, {numero} - {bairro}, {cep_display}
         protocolo_os = os_data["registros"][0].get("protocolo", "")  # ← NOVO CAMPO ADICIONADO
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS (ATUALIZADO: primeiro chama alterar_setor para garantir status/setor, depois faz PUT detalhado)
         payload_agenda = {
@@ -759,9 +760,11 @@ Novo endereço: {endereco}, {numero} - {bairro}, {cep_display}
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             # fallback para POST (observado como funcional nos logs)
@@ -770,9 +773,11 @@ Novo endereço: {endereco}, {numero} - {bairro}, {cep_display}
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -873,7 +878,7 @@ Novo endereço: {endereco}, {numero} - {bairro}, {cep_display}
         }), 200
 
     except Exception as e:
-        print("EXCEPTION:", str(e))
+        # print("EXCEPTION:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -969,9 +974,9 @@ def rota_update_contrato():
                 resp_count = requests.post(f"{HOST}/cliente_contrato", headers=headers_listar, data=json.dumps(q_count), timeout=30)
                 data_count = resp_count.json()
                 contrato_count = int(data_count.get("total") or 0)
-                print(f"DEBUG: cliente {id_cliente} possui {contrato_count} contratos (total reportado).")
+                # print(f"DEBUG: cliente {id_cliente} possui {contrato_count} contratos (total reportado).")
         except Exception as e:
-            print("WARN: falha ao obter quantidade de contratos do cliente:", e)
+            # print("WARN: falha ao obter quantidade de contratos do cliente:", e)
             contrato_count = None
 
         # 3) CEP: enviar apenas se válido (8 dígitos) e formatado com "-"
@@ -1020,9 +1025,9 @@ def rota_update_contrato():
             registro.pop(f, None)
 
         # 9) Log para debug
-        print("=== PUT /cliente_contrato payload ===")
-        print(json.dumps(registro, ensure_ascii=False, indent=2))
-        print("====================================")
+        # print("=== PUT /cliente_contrato payload ===")
+        # print(json.dumps(registro, ensure_ascii=False, indent=2))
+        # print("====================================")
 
         # 10) Enviar PUT para atualizar o contrato
         url_put = f"{HOST}/cliente_contrato/{id_contrato}"
@@ -1063,9 +1068,9 @@ def rota_update_contrato():
 
                     ativos = [r for r in registros if is_active_contract_local(r)]
                     contrato_count = len(ativos)
-                    print(f"DEBUG: cliente {id_cliente} possui {len(registros)} contratos (raw) e {contrato_count} contratos ativos.")
+                    # print(f"DEBUG: cliente {id_cliente} possui {len(registros)} contratos (raw) e {contrato_count} contratos ativos.")
                 except Exception as e:
-                    print("WARN: falha ao obter quantidade de contratos do cliente:", e)
+                    # print("WARN: falha ao obter quantidade de contratos do cliente:", e)
                     contrato_count = None
 
             # só sincroniza cliente se houver exatamente 1 contrato ativo
@@ -1127,9 +1132,9 @@ def rota_update_contrato():
                         registro_cliente.pop(f, None)
 
                     # log e PUT no cliente
-                    print("=== PUT /cliente payload (sync from single-active-contract client) ===")
-                    print(json.dumps(registro_cliente, ensure_ascii=False, indent=2))
-                    print("=====================================================================")
+                    # print("=== PUT /cliente payload (sync from single-active-contract client) ===")
+                    # print(json.dumps(registro_cliente, ensure_ascii=False, indent=2))
+                    # print("=====================================================================")
 
                     url_put_cliente = f"{HOST}/cliente/{id_cliente}"
                     resp_put_cliente = requests.put(url_put_cliente, headers=headers_put, data=json.dumps(registro_cliente), timeout=30)
@@ -1141,17 +1146,21 @@ def rota_update_contrato():
 
                     if resp_put_cliente.status_code != 200 or resp_put_cliente_json.get("type") == "error":
                         # não falha todo o fluxo por conta da sync do cliente, apenas loga e retorna aviso parcial
-                        print("WARN: Falha ao atualizar cliente (mesmo após atualizar contrato):", resp_put_cliente.status_code, resp_put_cliente.text)
+                        # print("WARN: Falha ao atualizar cliente (mesmo após atualizar contrato):", resp_put_cliente.status_code, resp_put_cliente.text)
+                        pass
                 else:
-                    print("DEBUG: Não foi possível obter registro do cliente para sincronização (vazio).")
+                    # print("DEBUG: Não foi possível obter registro do cliente para sincronização (vazio).")
+                    pass
+                    
         except Exception as e:
-            print("WARN: Erro durante sincronização de /cliente:", e)
+            # print("WARN: Erro durante sincronização de /cliente:", e)
+            pass
 
         # 12) tudo ok
         return jsonify({"mensagem": "Contrato atualizado com sucesso (e cliente sincronizado quando aplicável).", "resposta": resp_json}), 200
 
     except Exception as e:
-        print("EXCEPTION /update_contrato:", str(e))
+        # print("EXCEPTION /update_contrato:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -1282,7 +1291,7 @@ Motivo da Mudança: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -1332,9 +1341,11 @@ Motivo da Mudança: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -1342,9 +1353,11 @@ Motivo da Mudança: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -1362,7 +1375,7 @@ Motivo da Mudança: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/mudanca:", str(e))
+        # print("EXCEPTION /api/mudanca:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -1493,7 +1506,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -1543,9 +1556,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -1553,9 +1568,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -1573,7 +1590,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/semconexao:", str(e))
+        # print("EXCEPTION /api/semconexao:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -1704,7 +1721,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -1754,9 +1771,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -1764,9 +1783,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -1784,7 +1805,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/lentidao:", str(e))
+        # print("EXCEPTION /api/lentidao:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -1915,7 +1936,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -1965,9 +1986,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -1975,9 +1998,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -1995,7 +2020,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/quedas:", str(e))
+        # print("EXCEPTION /api/quedas:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -2126,7 +2151,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -2176,9 +2201,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -2186,9 +2213,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -2206,7 +2235,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/config:", str(e))
+        # print("EXCEPTION /api/config:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -2337,7 +2366,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -2387,9 +2416,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -2397,9 +2428,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -2417,7 +2450,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/troca:", str(e))
+        # print("EXCEPTION /api/troca:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -2548,7 +2581,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -2598,9 +2631,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -2608,9 +2643,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -2628,7 +2665,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/alarmada:", str(e))
+        # print("EXCEPTION /api/alarmada:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -2759,7 +2796,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -2809,9 +2846,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -2819,9 +2858,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -2839,7 +2880,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/sinal:", str(e))
+        # print("EXCEPTION /api/sinal:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -2970,7 +3011,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -3020,9 +3061,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -3030,9 +3073,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -3050,7 +3095,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/fonte:", str(e))
+        # print("EXCEPTION /api/fonte:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
@@ -3181,7 +3226,7 @@ Motivo do Agendamento: {observacoes}""".strip()
         protocolo_os = os_data["registros"][0].get("protocolo", "")
         mensagem_atual = os_data["registros"][0].get("mensagem") or mensagem
 
-        print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
+        # print(f"DEBUG: Protocolo da OS encontrado: {protocolo_os}")
 
         # 4) agendar OS com ID do assunto 259
         payload_agenda = {
@@ -3231,9 +3276,11 @@ Motivo do Agendamento: {observacoes}""".strip()
             if resp_alter_put.status_code >= 200 and resp_alter_put.status_code < 300:
                 success = True
             else:
-                print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                # print(f"PUT su_oss_chamado_alterar_setor retornou status {resp_alter_put.status_code}: {resp_alter_put.text}")
+                pass
         except Exception as e:
-            print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            # print("Erro no PUT su_oss_chamado_alterar_setor:", e)
+            pass
 
         if not success:
             try:
@@ -3241,9 +3288,11 @@ Motivo do Agendamento: {observacoes}""".strip()
                 if resp_alter_post.status_code >= 200 and resp_alter_post.status_code < 300:
                     success = True
                 else:
-                    print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    # print(f"POST su_oss_chamado_alterar_setor retornou status {resp_alter_post.status_code}: {resp_alter_post.text}")
+                    pass
             except Exception as e:
-                print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                # print("Erro no POST su_oss_chamado_alterar_setor:", e)
+                pass
 
         if not success:
             return jsonify({"error": "Erro ao aplicar alterar_setor (status/setor). Veja logs do servidor para detalhes."}), 400
@@ -3261,12 +3310,12 @@ Motivo do Agendamento: {observacoes}""".strip()
         }), 200
 
     except Exception as e:
-        print("EXCEPTION /api/cabeamento:", str(e))
+        # print("EXCEPTION /api/cabeamento:", str(e))
         return jsonify({"error": str(e)}), 500
 
 # --------------------------
 # Execução
 # --------------------------
 if __name__ == "__main__":
-    print("Running app with HOST_API:", HOST, "GEOCODE_ENABLED:", GEOCODE_ENABLED)
+    # print("Running app with HOST_API:", HOST, "GEOCODE_ENABLED:", GEOCODE_ENABLED)
     app.run(host="0.0.0.0", port=5000, debug=True)

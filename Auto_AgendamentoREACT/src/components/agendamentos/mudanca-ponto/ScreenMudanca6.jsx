@@ -86,7 +86,7 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
         melhor_horario_reserva: periodToReserveLetter[formData.period] || "Q",
       };
 
-      console.log("Enviando /api/update_contrato payload:", updateContratoPayload);
+      /* console.log("Enviando /api/update_contrato payload:", updateContratoPayload); */
 
       const resUpdate = await fetch("http://10.0.30.251:5000/api/update_contrato", {
         method: "POST",
@@ -97,10 +97,10 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
       const jsonUpdate = await resUpdate.json().catch(() => ({ error: "Resposta inválida do servidor no update_contrato" }));
 
       if (!resUpdate.ok) {
-        console.warn("Aviso: Falha ao atualizar contrato, mas continuando com mudança de ponto:", jsonUpdate);
+        /* console.warn("Aviso: Falha ao atualizar contrato, mas continuando com mudança de ponto:", jsonUpdate); */
         // Não vamos lançar erro aqui para não bloquear o fluxo principal
       } else {
-        console.log("Contrato atualizado com sucesso:", jsonUpdate);
+        /* console.log("Contrato atualizado com sucesso:", jsonUpdate); */
       }
 
       // 2. SEGUNDO: Criar a mudança de ponto
@@ -130,7 +130,7 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
         melhor_horario_reserva: periodToReserveLetter[formData.period] || "Q",
       };
 
-      console.log("Enviando /api/mudanca-ponto payload:", mudancaPontoPayload);
+      /* console.log("Enviando /api/mudanca-ponto payload:", mudancaPontoPayload); */
 
       const resMudanca = await fetch("http://10.0.30.251:5000/api/mudanca", {
         method: "POST",
@@ -145,7 +145,7 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
         throw new Error(`Falha na mudança de ponto: ${errMsg}`);
       }
 
-      console.log("Mudança de ponto criada:", jsonMudanca);
+      /* console.log("Mudança de ponto criada:", jsonMudanca); */
 
       setSuccessData({
         protocolo: jsonMudanca.protocolo_os || jsonMudanca.id_ticket,
@@ -158,7 +158,7 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
       });
 
     } catch (err) {
-      console.error("Erro ao finalizar mudança de ponto:", err);
+      /* console.error("Erro ao finalizar mudança de ponto:", err); */
       alert("Erro ao finalizar: " + (err.message || String(err)));
     } finally {
       setLoading(false);
@@ -192,7 +192,7 @@ export default function ScreenMudanca6({ formData, prevStep, onReset }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
     } catch (err) {
-      console.error('Falha ao copiar texto: ', err);
+      /* console.error('Falha ao copiar texto: ', err); */
       alert('Falha ao copiar texto. Por favor, copie manualmente.');
     }
   };

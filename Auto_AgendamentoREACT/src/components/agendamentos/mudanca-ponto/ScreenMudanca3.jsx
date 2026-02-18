@@ -53,7 +53,7 @@ export default function ScreenMudanca3({ formData, setFormData, nextStep, prevSt
 
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-          console.warn("Erro ao obter contrato:", data);
+          /* console.warn("Erro ao obter contrato:", data); */
           setFetchError(data.error || "Erro ao buscar contrato");
           setLoading(false);
           return;
@@ -67,7 +67,7 @@ export default function ScreenMudanca3({ formData, setFormData, nextStep, prevSt
           return;
         }
 
-        console.log("DEBUG /cliente_contrato -> registro raw:", registro);
+        /* console.log("DEBUG /cliente_contrato -> registro raw:", registro); */
 
         const tryPick = (obj, keys) => {
           for (const k of keys) {
@@ -115,7 +115,7 @@ export default function ScreenMudanca3({ formData, setFormData, nextStep, prevSt
         }));
 
       } catch (err) {
-        console.error("Erro fetch contrato:", err);
+        /* console.error("Erro fetch contrato:", err); */
         setFetchError(String(err) || "Erro desconhecido");
       } finally {
         setLoading(false);
@@ -147,7 +147,7 @@ export default function ScreenMudanca3({ formData, setFormData, nextStep, prevSt
         cidade_atual: dados.city || prev.cidade_atual || ""
       }));
     } catch (err) {
-      console.error(err);
+      /* console.error(err); */
       alert("Erro ao buscar CEP.");
     }
   };
